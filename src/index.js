@@ -701,11 +701,20 @@ export default class extends Component {
             i <= (index + loopVal + loadMinimalSize)) {
             return <View style={pageStyle} key={i}>{children[page]}</View>
           } else {
-            return (
-              <View style={pageStyleLoading} key={i}>
-                {loadMinimalLoader ? loadMinimalLoader : <ActivityIndicator />}
-              </View>
-            )
+            if (Platform.OS === 'android') {
+              // This makes no sense but ViewPagerAndroid seems to be buggy
+              // if we return a falsy value
+              return (
+                <View style={pageStyle} key={i} />
+              )
+            }
+            else {
+              return (
+                <View style={pageStyleLoading} key={`loading-${i}`}>
+                  {props.loadMinimalLoader || <ActivityIndicator />}
+                </View>
+              )
+            }
           }
         } else {
           return <View style={pageStyle} key={i}>{children[page]}</View>
